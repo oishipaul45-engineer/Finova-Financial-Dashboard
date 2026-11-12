@@ -206,7 +206,7 @@ Possible future improvements include:
 
 **Oishi Paul**
 
-Built as a personal finance management project using modern web technologies and Firebase.
+Built as a personal finance management project using Modern Web Technologies and Firebase.
 
 ---
 
