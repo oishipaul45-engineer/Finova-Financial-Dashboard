@@ -1,0 +1,1358 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finova | Financial Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+  --bg:#070B18;
+  --card:#101A30;
+  --sidebar:#0A1224;
+  --text:#F4F8FF;
+  --muted:#91A3BF;
+  --border:#1D3150;
+  --accent:#168CFF;
+  --green:#00E6A0;
+  --red:#FF5577;
+  --shadow:0 12px 35px rgba(0,0,0,.2);
+}
+
+body.light {
+  --bg:#F1F6FF;
+  --card:#FFFFFF;
+  --sidebar:#E8F0FF;
+  --text:#101C35;
+  --muted:#64748B;
+  --border:#D8E4F5;
+  --accent:#0879EF;
+  --green:#009B70;
+  --red:#E04464;
+  --shadow:0 10px 30px rgba(40,80,140,.08);
+}
+
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 80% 0%,rgba(22,140,255,.12),transparent 40%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  transition:.3s;
+}
+
+button,input,select { font:inherit; }
+button { cursor:pointer; }
+
+/* LOGIN PAGE */
+
+#authPage {
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:25px;
+}
+
+.auth-card {
+  width:100%;
+  max-width:440px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:38px;
+  box-shadow:0 0 50px rgba(22,140,255,.12);
+  animation:appear .7s ease;
+}
+
+.auth-logo {
+  font-size:34px;
+  font-weight:800;
+  text-align:center;
+  margin-bottom:10px;
+  letter-spacing:-2px;
+}
+
+.auth-logo span { color:var(--accent); }
+
+.auth-subtitle {
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:30px;
+}
+
+.auth-card h2 {
+  font-size:23px;
+  margin-bottom:8px;
+}
+
+.auth-description {
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:25px;
+}
+
+.field { margin-bottom:17px; }
+
+.field label {
+  display:block;
+  font-size:12px;
+  margin-bottom:8px;
+  color:var(--muted);
+}
+
+.field input {
+  width:100%;
+  padding:14px;
+  background:var(--bg);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:10px;
+  outline:none;
+}
+
+.field input:focus {
+  border-color:var(--accent);
+  box-shadow:0 0 12px rgba(22,140,255,.15);
+}
+
+.primary-btn {
+  width:100%;
+  padding:14px;
+  border:0;
+  border-radius:10px;
+  color:white;
+  background:linear-gradient(100deg,#0879EF,#168CFF);
+  font-weight:700;
+  box-shadow:0 5px 20px rgba(22,140,255,.25);
+  transition:.3s;
+}
+
+.primary-btn:hover {
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px rgba(22,140,255,.4);
+}
+
+.auth-switch {
+  margin-top:22px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.auth-switch button,.forgot-btn {
+  background:none;
+  border:0;
+  color:var(--accent);
+  font-weight:600;
+}
+
+.forgot-row {
+  display:flex;
+  justify-content:flex-end;
+  margin:-5px 0 18px;
+}
+
+.auth-message {
+  font-size:12px;
+  margin-top:14px;
+  min-height:18px;
+  color:var(--red);
+}
+
+.auth-message.success { color:var(--green); }
+
+.demo-note {
+  margin-top:22px;
+  color:var(--muted);
+  text-align:center;
+  font-size:11px;
+  line-height:1.6;
+}
+
+/* MAIN DASHBOARD */
+
+#dashboard {
+  display:none;
+}
+
+.layout { display:flex; min-height:100vh; }
+
+.sidebar {
+  width:245px;
+  position:fixed;
+  top:0;
+  left:0;
+  height:100vh;
+  padding:28px 18px;
+  background:var(--sidebar);
+  border-right:1px solid var(--border);
+  z-index:10;
+  transition:.3s;
+}
+
+.logo {
+  font-size:27px;
+  font-weight:800;
+  letter-spacing:-1.5px;
+  margin:5px 10px 42px;
+}
+
+.logo span {
+  color:var(--accent);
+  text-shadow:0 0 15px rgba(22,140,255,.7);
+}
+
+.nav-title {
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:2px;
+  margin:25px 12px 12px;
+}
+
+.nav a {
+  display:block;
+  text-decoration:none;
+  color:var(--muted);
+  padding:14px;
+  border-radius:10px;
+  margin:5px 0;
+  font-size:13px;
+  transition:.25s;
+}
+
+.nav a:hover,.nav a.active {
+  color:var(--accent);
+  background:rgba(22,140,255,.13);
+  box-shadow:inset 3px 0 0 var(--accent);
+}
+
+.sidebar-bottom {
+  position:absolute;
+  bottom:25px;
+  left:18px;
+  right:18px;
+}
+
+.logout-btn {
+  width:100%;
+  background:rgba(255,85,119,.08);
+  color:var(--red);
+  border:1px solid rgba(255,85,119,.2);
+  border-radius:10px;
+  padding:12px;
+}
+
+.main {
+  margin-left:245px;
+  width:calc(100% - 245px);
+  padding:30px 35px;
+}
+
+.topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:32px;
+}
+
+h1 {
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:-1px;
+  background:linear-gradient(90deg,var(--text),#54B5FF);
+  background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  color:var(--muted);
+  font-size:12px;
+  margin-top:9px;
+}
+
+.top-actions {
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.small-btn {
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--border);
+  padding:11px 14px;
+  border-radius:9px;
+}
+
+.profile {
+  height:39px;
+  width:39px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:50%;
+  background:linear-gradient(135deg,#0879EF,#54B5FF);
+  color:white;
+  font-weight:700;
+}
+
+.section-title {
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:18px;
+}
+
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:17px;
+  margin-bottom:27px;
+}
+
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:22px;
+  box-shadow:var(--shadow);
+  animation:appear .7s ease both;
+  transition:.3s;
+}
+
+.card:hover {
+  transform:translateY(-5px);
+  border-color:var(--accent);
+  box-shadow:0 12px 35px rgba(22,140,255,.12);
+}
+
+.stat-label {
+  color:var(--muted);
+  font-size:12px;
+}
+
+.stat-value {
+  font-size:25px;
+  font-weight:800;
+  margin:17px 0 10px;
+  letter-spacing:-.5px;
+}
+
+.positive { color:var(--green); }
+.negative { color:var(--red); }
+
+.change { font-size:11px; }
+
+.charts {
+  display:grid;
+  grid-template-columns:1.7fr 1fr;
+  gap:18px;
+  margin-bottom:27px;
+}
+
+.card-heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:23px;
+}
+
+.card-heading h3 { font-size:15px; }
+
+.chart-box {
+  height:260px;
+  position:relative;
+}
+
+select {
+  background:var(--bg);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:9px;
+  border-radius:8px;
+  font-size:11px;
+  outline:none;
+}
+
+.table-controls {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:17px;
+}
+
+.search-input {
+  width:230px;
+  padding:11px;
+  border:1px solid var(--border);
+  background:var(--bg);
+  color:var(--text);
+  border-radius:8px;
+  outline:none;
+}
+
+.table-wrap { overflow-x:auto; }
+
+.transactions {
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+  min-width:570px;
+}
+
+.transactions th {
+  text-align:left;
+  padding:14px 9px;
+  color:var(--muted);
+  font-weight:500;
+}
+
+.transactions td {
+  padding:17px 9px;
+  border-top:1px solid var(--border);
+}
+
+.status {
+  background:rgba(0,230,160,.1);
+  color:var(--green);
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:10px;
+}
+
+.income { color:var(--green); }
+.expense { color:var(--red); }
+
+.empty-state {
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+}
+
+/* EXTRA SECTIONS */
+
+.content-section {
+  margin-bottom:30px;
+  scroll-margin-top:25px;
+}
+
+.welcome-strip {
+  padding:20px 23px;
+  border:1px solid rgba(22,140,255,.25);
+  border-radius:14px;
+  background:linear-gradient(110deg,rgba(22,140,255,.15),rgba(22,140,255,.02));
+  margin-bottom:25px;
+}
+
+.welcome-strip p {
+  font-size:12px;
+  color:var(--muted);
+  margin-top:7px;
+}
+
+@keyframes appear {
+  from { opacity:0; transform:translateY(15px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+@media(max-width:1050px) {
+  .stats { grid-template-columns:repeat(2,1fr); }
+  .charts { grid-template-columns:1fr; }
+}
+
+@media(max-width:650px) {
+  .sidebar {
+    width:65px;
+    padding:20px 7px;
+  }
+  .logo {
+    font-size:17px;
+    margin:8px 2px 35px;
+  }
+  .nav-title,.sidebar-bottom span { display:none; }
+  .nav a {
+    font-size:0;
+    text-align:center;
+    padding:15px 4px;
+  }
+  .sidebar-bottom { left:7px; right:7px; }
+  .main {
+    margin-left:65px;
+    width:calc(100% - 65px);
+    padding:20px 12px;
+  }
+  .stats { gap:9px; }
+  .card { padding:14px; }
+  .stat-value { font-size:18px; }
+  h1 { font-size:20px; }
+  .topbar { align-items:flex-start; }
+  .charts { gap:12px; }
+  .chart-box { height:220px; }
+  .search-input { width:150px; }
+  .table-controls { flex-wrap:wrap; }
+  .auth-card { padding:25px 20px; }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    animation-duration:.01ms!important;
+    transition-duration:.01ms!important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN / REGISTRATION -->
+
+<section id="authPage">
+  <div class="auth-card">
+
+    <div class="auth-logo">Fin<span>ova.</span></div>
+    <p class="auth-subtitle">Your money. Your insights. Your future.</p>
+
+    <h2 id="authTitle">Welcome Back!</h2>
+    <p class="auth-description" id="authDescription">
+      Login to access your financial dashboard.
+    </p>
+
+    <form id="authForm">
+
+      <div class="field" id="nameField" style="display:none">
+        <label>Full Name</label>
+        <input id="fullName" type="text" placeholder="Enter your name">
+      </div>
+
+      <div class="field">
+        <label>Email Address</label>
+        <input id="email" type="email" placeholder="Enter your email" required>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="Enter your password" required minlength="6">
+      </div>
+
+      <div class="forgot-row" id="forgotRow">
+        <button type="button" class="forgot-btn" id="forgotBtn">
+          Forgot password?
+        </button>
+      </div>
+
+      <button class="primary-btn" type="submit" id="authSubmit">
+        Login to Finova →
+      </button>
+
+    </form>
+
+    <p class="auth-message" id="authMessage" role="status" aria-live="polite"></p>
+
+    <div class="auth-switch">
+      <span id="switchText">Don't have an account?</span>
+      <button id="switchBtn" type="button">Create account</button>
+    </div>
+
+    <p class="demo-note">
+      Secure authentication powered by Firebase.<br>
+      Your dashboard starts with sample financial data.
+    </p>
+
+  </div>
+</section>
+
+
+<!-- MAIN DASHBOARD -->
+
+<section id="dashboard">
+
+<div class="layout">
+
+<aside class="sidebar">
+
+  <div class="logo">Fin<span>ova.</span></div>
+
+  <div class="nav-title">MAIN MENU</div>
+
+  <nav class="nav">
+    <a href="#overview" class="active">▦ Dashboard</a>
+    <a href="#analytics">◈ Analytics</a>
+    <a href="#transactions">⇄ Transactions</a>
+    <a href="#income">↗ Income</a>
+    <a href="#expenses">↘ Expenses</a>
+  </nav>
+
+  <div class="nav-title">PREFERENCES</div>
+
+  <nav class="nav">
+    <a href="#" id="themeLink">☼ Appearance</a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <button class="logout-btn" id="logoutBtn">
+      <span>↪ Logout</span> ⇥
+    </button>
+  </div>
+
+</aside>
+
+
+<main class="main">
+
+<header class="topbar">
+
+  <div>
+    <h1>Dashboard Overview</h1>
+    <p class="subtitle" id="greeting">
+      Welcome to your financial dashboard.
+    </p>
+  </div>
+
+  <div class="top-actions">
+    <button class="small-btn" id="themeBtn">☼ Light mode</button>
+    <div class="profile" id="profileInitial">F</div>
+  </div>
+
+</header>
+
+
+<section id="overview" class="content-section">
+
+  <div class="welcome-strip">
+    <strong id="welcomeName">Welcome to Finova!</strong>
+    <p>Track your finances, understand your spending and make smarter decisions.</p>
+  </div>
+
+  <div class="stats">
+
+    <div class="card">
+      <p class="stat-label">Total Balance</p>
+      <div class="stat-value counter" data-value="245800">₹0</div>
+      <span class="change positive">↑ 12.8% this month</span>
+    </div>
+
+    <div class="card" id="income">
+      <p class="stat-label">Total Income</p>
+      <div class="stat-value counter" data-value="85400">₹0</div>
+      <span class="change positive">↑ 8.2% this month</span>
+    </div>
+
+    <div class="card" id="expenses">
+      <p class="stat-label">Total Expenses</p>
+      <div class="stat-value counter" data-value="32600">₹0</div>
+      <span class="change negative">↑ 3.4% this month</span>
+    </div>
+
+    <div class="card">
+      <p class="stat-label">Total Savings</p>
+      <div class="stat-value counter" data-value="52800">₹0</div>
+      <span class="change positive">↑ 15.6% this month</span>
+    </div>
+
+  </div>
+
+</section>
+
+
+<section id="analytics" class="content-section">
+
+  <h2 class="section-title">Financial Analytics</h2>
+
+  <div class="charts">
+
+    <div class="card">
+
+      <div class="card-heading">
+        <h3>Income vs Expenses</h3>
+
+        <select id="periodFilter">
+          <option value="monthly">Monthly</option>
+          <option value="weekly">Weekly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+      </div>
+
+      <div class="chart-box">
+        <canvas id="lineChart"></canvas>
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="card-heading">
+        <h3>Income Distribution</h3>
+      </div>
+
+      <div class="chart-box">
+        <canvas id="doughnutChart"></canvas>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section id="transactions" class="content-section">
+
+  <div class="card">
+
+    <div class="card-heading">
+      <h3>Recent Transactions</h3>
+      <button class="small-btn" id="exportBtn">↓ Export CSV</button>
+    </div>
+
+    <div class="table-controls">
+
+      <input
+        class="search-input"
+        id="searchInput"
+        type="search"
+        placeholder="Search transactions..."
+      >
+
+      <select id="transactionFilter">
+        <option value="all">All transactions</option>
+        <option value="income">Income</option>
+        <option value="expense">Expenses</option>
+      </select>
+
+    </div>
+
+    <div class="table-wrap">
+
+      <table class="transactions">
+
+        <thead>
+          <tr>
+            <th>Transaction</th>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+
+        <tbody id="transactionBody"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+</div>
+</section>
+
+
+<!-- FIREBASE AND DASHBOARD JAVASCRIPT -->
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  sendPasswordResetEmail,
+  updateProfile
+}
+from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDI89Y0gNBpV_M6z1SmoTO3aW502anTJIE",
+  authDomain: "finova-a6602.firebaseapp.com",
+  projectId: "finova-a6602",
+  storageBucket: "finova-a6602.firebasestorage.app",
+  messagingSenderId: "42928281204",
+  appId: "1:42928281204:web:a6140e19cb69e8378be321",
+  measurementId: "G-CYF2B31RJB"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+
+/* 2. PAGE ELEMENTS */
+
+const authPage = document.getElementById("authPage");
+const dashboard = document.getElementById("dashboard");
+const authForm = document.getElementById("authForm");
+const authMessage = document.getElementById("authMessage");
+
+let isRegister = false;
+
+
+/* 3. LOGIN / REGISTER SWITCH */
+
+function setAuthMode(register) {
+
+  isRegister = register;
+
+  document.getElementById("authTitle").textContent =
+    register ? "Create Your Account" : "Welcome Back!";
+
+  document.getElementById("authDescription").textContent =
+    register
+      ? "Join Finova and take control of your finances."
+      : "Login to access your financial dashboard.";
+
+  document.getElementById("nameField").style.display =
+    register ? "block" : "none";
+
+  document.getElementById("fullName").required = register;
+
+  document.getElementById("forgotRow").style.display =
+    register ? "none" : "flex";
+
+  document.getElementById("authSubmit").textContent =
+    register ? "Create Account →" : "Login to Finova →";
+
+  document.getElementById("switchText").textContent =
+    register ? "Already have an account?" : "Don't have an account?";
+
+  document.getElementById("switchBtn").textContent =
+    register ? "Login" : "Create account";
+
+  authMessage.textContent = "";
+}
+
+document.getElementById("switchBtn").addEventListener("click", () => {
+  setAuthMode(!isRegister);
+});
+
+
+/* 4. LOGIN AND REGISTRATION */
+
+authForm.addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const name = document.getElementById("fullName").value.trim();
+
+  const submitBtn = document.getElementById("authSubmit");
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Please wait...";
+  authMessage.textContent = "";
+  authMessage.className = "auth-message";
+
+  try {
+
+    if (isRegister) {
+
+      const result = await createUserWithEmailAndPassword(
+        auth, email, password
+      );
+
+      if (name) {
+        await updateProfile(result.user, {
+          displayName: name
+        });
+      }
+
+    } else {
+
+      await signInWithEmailAndPassword(
+        auth, email, password
+      );
+
+    }
+
+  } catch (error) {
+
+    const errors = {
+      "auth/email-already-in-use": "This email already has an account.",
+      "auth/invalid-email": "Please enter a valid email address.",
+      "auth/weak-password": "Password must contain at least 6 characters.",
+      "auth/invalid-credential": "Incorrect email or password.",
+      "auth/user-not-found": "No account found. Please register.",
+      "auth/too-many-requests": "Too many attempts. Please try again later.",
+      "auth/network-request-failed": "Network error. Check your internet connection."
+    };
+
+    authMessage.textContent =
+      errors[error.code] || "Something went wrong: " + error.message;
+
+  } finally {
+
+    submitBtn.disabled = false;
+    submitBtn.textContent =
+      isRegister ? "Create Account →" : "Login to Finova →";
+
+  }
+
+});
+
+
+/* 5. PASSWORD RESET */
+
+document.getElementById("forgotBtn").addEventListener("click", async () => {
+
+  const email = document.getElementById("email").value.trim();
+
+  if (!email) {
+    authMessage.textContent = "Enter your email address first.";
+    return;
+  }
+
+  try {
+
+    await sendPasswordResetEmail(auth, email);
+
+    authMessage.textContent = "Password reset link sent to your email.";
+    authMessage.className = "auth-message success";
+
+  } catch (error) {
+
+    authMessage.textContent =
+      "Unable to send reset email. Please check your email address.";
+
+  }
+
+});
+
+
+/* 6. AUTHENTICATION STATE */
+
+onAuthStateChanged(auth, (user) => {
+
+  if (user) {
+
+    authPage.style.display = "none";
+    dashboard.style.display = "block";
+
+    const displayName =
+      user.displayName || user.email.split("@")[0];
+
+    document.getElementById("welcomeName").textContent =
+      "Welcome, " + displayName + "!";
+
+    document.getElementById("greeting").textContent =
+      "Here is your financial overview.";
+
+    document.getElementById("profileInitial").textContent =
+      displayName.charAt(0).toUpperCase();
+
+    startDashboard();
+
+  } else {
+
+    dashboard.style.display = "none";
+    authPage.style.display = "flex";
+
+  }
+
+});
+
+
+/* 7. LOGOUT */
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+
+  await signOut(auth);
+
+});
+
+
+/* 8. DARK / LIGHT MODE */
+
+function applyTheme(theme) {
+
+  document.body.classList.toggle("light", theme === "light");
+
+  document.getElementById("themeBtn").textContent =
+    theme === "light" ? "☾ Dark mode" : "☼ Light mode";
+
+}
+
+applyTheme(localStorage.getItem("finovaTheme") || "dark");
+
+function toggleTheme() {
+
+  const nextTheme =
+    document.body.classList.contains("light") ? "dark" : "light";
+
+  localStorage.setItem("finovaTheme", nextTheme);
+  applyTheme(nextTheme);
+
+  updateCharts();
+
+}
+
+document.getElementById("themeBtn").addEventListener("click", toggleTheme);
+document.getElementById("themeLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  toggleTheme();
+});
+
+
+/* 9. ANIMATED FINANCIAL COUNTERS */
+
+function animateCounters() {
+
+  document.querySelectorAll(".counter").forEach(counter => {
+
+    const target = Number(counter.dataset.value);
+    const duration = 1200;
+    const start = performance.now();
+
+    function update(now) {
+
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = Math.round(target * eased);
+
+      counter.textContent = "₹" + value.toLocaleString("en-IN");
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+
+    }
+
+    requestAnimationFrame(update);
+
+  });
+
+}
+
+
+/* 10. SAMPLE FINANCIAL DATA */
+
+const transactions = [
+
+  {name:"Salary Payment",date:"2026-11-12",category:"Salary",type:"income",amount:45000},
+  {name:"Shopping",date:"2026-11-10",category:"Personal",type:"expense",amount:3500},
+  {name:"Freelance Project",date:"2026-11-08",category:"Freelance",type:"income",amount:12000},
+  {name:"Electricity Bill",date:"2026-11-05",category:"Utilities",type:"expense",amount:1800},
+  {name:"Investment Return",date:"2026-11-03",category:"Investment",type:"income",amount:8500},
+  {name:"Restaurant",date:"2026-11-02",category:"Food",type:"expense",amount:1200},
+  {name:"Online Course",date:"2026-10-28",category:"Education",type:"expense",amount:2500},
+  {name:"Consulting",date:"2026-10-25",category:"Freelance",type:"income",amount:9500}
+
+];
+
+
+/* 11. TRANSACTION TABLE AND SEARCH */
+
+const transactionBody = document.getElementById("transactionBody");
+
+function renderTransactions() {
+
+  const search =
+    document.getElementById("searchInput").value.toLowerCase();
+
+  const filter =
+    document.getElementById("transactionFilter").value;
+
+  const filtered = transactions.filter(item => {
+
+    const matchesSearch =
+      item.name.toLowerCase().includes(search) ||
+      item.category.toLowerCase().includes(search);
+
+    const matchesType =
+      filter === "all" || item.type === filter;
+
+    return matchesSearch && matchesType;
+
+  });
+
+  if (!filtered.length) {
+
+    transactionBody.innerHTML =
+      '<tr><td colspan="5" class="empty-state">No transactions found.</td></tr>';
+
+    return;
+
+  }
+
+  transactionBody.innerHTML = filtered.map(item => {
+
+    const date = new Date(item.date + "T00:00:00")
+      .toLocaleDateString("en-IN", {
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+      });
+
+    const amount =
+      item.type === "income" ? "+" : "-";
+
+    return `
+      <tr>
+        <td>${item.name}</td>
+        <td>${date}</td>
+        <td>${item.category}</td>
+        <td><span class="status">Completed</span></td>
+        <td class="${item.type}">
+          ${amount}₹${item.amount.toLocaleString("en-IN")}
+        </td>
+      </tr>
+    `;
+
+  }).join("");
+
+}
+
+document.getElementById("searchInput")
+  .addEventListener("input", renderTransactions);
+
+document.getElementById("transactionFilter")
+  .addEventListener("change", renderTransactions);
+
+
+/* 12. EXPORT TRANSACTIONS AS CSV */
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+
+  const headers = ["Name","Date","Category","Type","Amount"];
+
+  const rows = transactions.map(item => [
+    item.name,
+    item.date,
+    item.category,
+    item.type,
+    item.amount
+  ]);
+
+  const csv = [headers,...rows].map(row =>
+    row.map(value =>
+      '"' + String(value).replace(/"/g,'""') + '"'
+    ).join(",")
+  ).join("\n");
+
+  const blob = new Blob([csv], {
+    type:"text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "finova-transactions.csv";
+  link.click();
+
+  URL.revokeObjectURL(url);
+
+});
+
+
+/* 13. INTERACTIVE CHARTS */
+
+let lineChart;
+let doughnutChart;
+
+const chartData = {
+
+  monthly: {
+    labels:["Jun","Jul","Aug","Sep","Oct","Nov"],
+    income:[30,45,38,60,55,85],
+    expense:[20,25,22,35,30,40]
+  },
+
+  weekly: {
+    labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+    income:[12,18,15,25,20,30,35],
+    expense:[8,10,12,15,12,18,20]
+  },
+
+  yearly: {
+    labels:["2021","2022","2023","2024","2025","2026"],
+    income:[25,35,45,55,70,85],
+    expense:[15,20,25,30,35,40]
+  }
+
+};
+
+function updateCharts() {
+
+  const light = document.body.classList.contains("light");
+
+  Chart.defaults.color = light ? "#64748B" : "#91A3BF";
+
+  const period =
+    document.getElementById("periodFilter").value;
+
+  const data = chartData[period];
+
+  if (lineChart) lineChart.destroy();
+  if (doughnutChart) doughnutChart.destroy();
+
+  lineChart = new Chart(
+    document.getElementById("lineChart"), {
+
+    type:"line",
+
+    data:{
+      labels:data.labels,
+
+      datasets:[
+
+        {
+          label:"Income",
+          data:data.income,
+          borderColor:"#168CFF",
+          backgroundColor:"rgba(22,140,255,.15)",
+          fill:true,
+          tension:.4,
+          borderWidth:3,
+          pointRadius:3
+        },
+
+        {
+          label:"Expenses",
+          data:data.expense,
+          borderColor:"#00E6A0",
+          backgroundColor:"rgba(0,230,160,.05)",
+          tension:.4,
+          borderWidth:3,
+          pointRadius:3
+        }
+
+      ]
+    },
+
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+
+      interaction:{
+        intersect:false,
+        mode:"index"
+      },
+
+      plugins:{
+        legend:{
+          position:"bottom",
+          labels:{usePointStyle:true,padding:20}
+        }
+      },
+
+      scales:{
+        x:{
+          grid:{display:false}
+        },
+        y:{
+          grid:{
+            color:light ? "#E8EEF7" : "rgba(145,163,191,.1)"
+          },
+          beginAtZero:true
+        }
+      }
+    }
+
+  });
+
+
+  doughnutChart = new Chart(
+    document.getElementById("doughnutChart"), {
+
+    type:"doughnut",
+
+    data:{
+      labels:["Salary","Business","Freelance"],
+
+      datasets:[{
+        data:[55,30,15],
+        backgroundColor:[
+          "#168CFF",
+          "#00E6A0",
+          "#54D6FF"
+        ],
+        borderWidth:0,
+        hoverOffset:10
+      }]
+    },
+
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      cutout:"72%",
+
+      plugins:{
+        legend:{
+          position:"bottom",
+          labels:{usePointStyle:true,padding:18}
+        }
+      }
+    }
+
+  });
+
+}
+
+document.getElementById("periodFilter")
+  .addEventListener("change",updateCharts);
+
+
+/* 14. SIDEBAR NAVIGATION */
+
+document.querySelectorAll(".nav a[href^='#']").forEach(link => {
+
+  link.addEventListener("click", () => {
+
+    document.querySelectorAll(".nav a").forEach(item => {
+      item.classList.remove("active");
+    });
+
+    link.classList.add("active");
+
+  });
+
+});
+
+
+/* 15. START DASHBOARD */
+
+let dashboardStarted = false;
+
+function startDashboard() {
+
+  if (dashboardStarted) return;
+
+  dashboardStarted = true;
+
+  animateCounters();
+  renderTransactions();
+  updateCharts();
+
+}
+
+</script>
+
+</body>
+</html>
