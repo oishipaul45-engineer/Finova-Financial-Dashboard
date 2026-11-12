@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Finova - Personal Finance Dashboard">
+<title>Finova | Personal Finance</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<section id="authPage">
+  <div class="auth-card">
+    <div class="auth-logo">Fin<span>ova.</span></div>
+    <p class="auth-subtitle">Your money. Your insights. Your future.</p>
+    <h2 id="authTitle">Welcome Back!</h2>
+    <p class="auth-description" id="authDescription">Login to access your personal financial dashboard.</p>
+
+    <form id="authForm">
+      <div class="field hidden" id="nameField">
+        <label>Full Name</label>
+        <input id="fullName" type="text" placeholder="Enter your name">
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <input id="email" type="email" placeholder="Enter your email" required>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="Minimum 6 characters" required minlength="6">
+      </div>
+      <div class="forgot-row" id="forgotRow">
+        <button type="button" class="forgot-btn" id="forgotBtn">Forgot password?</button>
+      </div>
+      <button class="primary-btn" type="submit" id="authSubmit">Login to Finova →</button>
+    </form>
+
+    <p class="auth-message" id="authMessage" role="status" aria-live="polite"></p>
+    <div class="auth-switch">
+      <span id="switchText">Don't have an account?</span>
+      <button id="switchBtn" type="button">Create account</button>
+    </div>
+    <p class="demo-note">Secure authentication powered by Firebase.<br>Your financial data is stored per account in Firestore.</p>
+  </div>
+</section>
+
+<section id="dashboard">
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">Fin<span>ova.</span></div>
+
+  <div class="nav-title">MAIN MENU</div>
+  <nav class="nav">
+    <a href="#overview" class="active"><span class="nav-icon">⌂</span>Dashboard</a>
+    <a href="#analytics"><span class="nav-icon">◈</span>Analytics</a>
+    <a href="#transactions"><span class="nav-icon">⇄</span>Transactions</a>
+    <a href="#budgets"><span class="nav-icon">◫</span>Budgets</a>
+    <a href="#goals"><span class="nav-icon">◎</span>Savings Goals</a>
+  </nav>
+
+  <div class="nav-title">PREFERENCES</div>
+  <nav class="nav">
+    <a href="#" id="themeLink"><span class="nav-icon">☼</span>Appearance</a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <button class="logout-btn" id="logoutBtn">↪ <span>Logout</span></button>
+  </div>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+  <div>
+    <button class="icon-btn mobile-menu" id="mobileMenu">☰</button>
+    <h1>Financial Dashboard</h1>
+    <p class="subtitle" id="greeting">Your personal money overview.</p>
+  </div>
+  <div class="top-actions">
+    <button class="small-btn" id="themeBtn">☼ Light mode</button>
+    <button class="icon-btn" id="notificationBtn" title="Notifications">♢</button>
+    <div class="profile" id="profileInitial">F</div>
+  </div>
+</header>
+
+<section id="overview" class="content-section">
+  <div class="welcome-strip">
+    <strong id="welcomeName">Welcome to Finova!</strong>
+    <p>Track your money, understand your spending and make smarter financial decisions.</p>
+  </div>
+
+  <div class="stats">
+    <div class="card">
+      <div class="stat-top"><p class="stat-label">Total Balance</p><span class="stat-icon">💳</span></div>
+      <div class="stat-value" id="balanceValue">₹0</div>
+      <span class="change muted" id="balanceNote">Current balance</span>
+    </div>
+    <div class="card">
+      <div class="stat-top"><p class="stat-label">Total Income</p><span class="stat-icon">↗</span></div>
+      <div class="stat-value income" id="incomeValue">₹0</div>
+      <span class="change muted" id="incomeNote">This month</span>
+    </div>
+    <div class="card">
+      <div class="stat-top"><p class="stat-label">Total Expenses</p><span class="stat-icon">↘</span></div>
+      <div class="stat-value expense" id="expenseValue">₹0</div>
+      <span class="change muted" id="expenseNote">This month</span>
+    </div>
+    <div class="card">
+      <div class="stat-top"><p class="stat-label">Savings</p><span class="stat-icon">◎</span></div>
+      <div class="stat-value positive" id="savingValue">₹0</div>
+      <span class="change muted" id="savingNote">Income minus expenses</span>
+    </div>
+  </div>
+</section>
+
+<section id="analytics" class="content-section">
+  <h2 class="section-title">Financial Analytics</h2>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-heading">
+        <h3>Income vs Expenses</h3>
+        <select id="periodFilter">
+          <option value="monthly">Last 6 Months</option>
+          <option value="weekly">Last 7 Days</option>
+          <option value="yearly">Last 6 Years</option>
+        </select>
+      </div>
+      <div class="chart-box"><canvas id="lineChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-heading"><h3>Expense Breakdown</h3></div>
+      <div class="chart-box"><canvas id="doughnutChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <h2 class="section-title">Smart Insights</h2>
+  <div class="insights" id="insights"></div>
+</section>
+
+<section id="budgets" class="content-section">
+  <div class="card">
+    <div class="card-heading">
+      <h3>Monthly Budgets</h3>
+      <button class="small-btn" id="addBudgetBtn">+ Add Budget</button>
+    </div>
+    <div class="budget-grid" id="budgetList"></div>
+  </div>
+</section>
+
+<section id="goals" class="content-section">
+  <div class="card">
+    <div class="card-heading">
+      <h3>Savings Goals</h3>
+      <button class="small-btn" id="addGoalBtn">+ Add Goal</button>
+    </div>
+    <div class="goal-grid" id="goalList"></div>
+  </div>
+</section>
+
+<section id="transactions" class="content-section">
+  <div class="card">
+    <div class="card-heading">
+      <h3>Transactions</h3>
+      <div class="control-group">
+        <button class="small-btn" id="addTransactionBtn">+ Add Transaction</button>
+        <button class="small-btn" id="exportBtn">↓ Export CSV</button>
+      </div>
+    </div>
+
+    <div class="table-controls">
+      <input class="search-input" id="searchInput" type="search" placeholder="Search transactions...">
+      <div class="control-group">
+        <select id="transactionFilter">
+          <option value="all">All types</option>
+          <option value="income">Income</option>
+          <option value="expense">Expenses</option>
+        </select>
+        <select id="categoryFilter"><option value="all">All categories</option></select>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="transactions">
+        <thead><tr>
+          <th>Transaction</th><th>Date</th><th>Category</th><th>Type</th><th>Status</th><th>Amount</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="transactionBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+</section>
+
+<!-- TRANSACTION MODAL -->
+<div class="modal-backdrop" id="transactionModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="transactionModalTitle">Add Transaction</h3><button class="icon-btn" data-close="transactionModal">×</button></div>
+    <form id="transactionForm">
+      <input type="hidden" id="transactionId">
+      <div class="modal-grid">
+        <div class="full"><label class="muted">Description</label><input id="txName" required placeholder="e.g. Salary, Grocery shopping"></div>
+        <div><label class="muted">Amount</label><input id="txAmount" type="number" min="0.01" step="0.01" required placeholder="0"></div>
+        <div><label class="muted">Type</label><select id="txType"><option value="income">Income</option><option value="expense">Expense</option></select></div>
+        <div><label class="muted">Category</label><input id="txCategory" list="categoryOptions" required placeholder="Food"></div>
+        <div><label class="muted">Date</label><input id="txDate" type="date" required></div>
+        <div><label class="muted">Payment Method</label><select id="txMethod"><option>Bank</option><option>UPI</option><option>Cash</option><option>Card</option><option>Other</option></select></div>
+        <div class="full"><label class="muted">Notes</label><input id="txNotes" placeholder="Optional note"></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-close="transactionModal">Cancel</button><button class="primary-btn" style="width:auto;padding:11px 18px" type="submit">Save Transaction</button></div>
+    </form>
+  </div>
+</div>
+
+<datalist id="categoryOptions">
+  <option>Salary</option><option>Freelance</option><option>Business</option><option>Investment</option>
+  <option>Food</option><option>Shopping</option><option>Transport</option><option>Utilities</option>
+  <option>Education</option><option>Health</option><option>Entertainment</option><option>Other</option>
+</datalist>
+
+<!-- BUDGET MODAL -->
+<div class="modal-backdrop" id="budgetModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Add Monthly Budget</h3><button class="icon-btn" data-close="budgetModal">×</button></div>
+    <form id="budgetForm">
+      <div class="modal-grid">
+        <div><label class="muted">Category</label><input id="budgetCategory" required placeholder="Food"></div>
+        <div><label class="muted">Monthly Limit</label><input id="budgetAmount" type="number" min="1" step=".01" required placeholder="5000"></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-close="budgetModal">Cancel</button><button class="primary-btn" style="width:auto;padding:11px 18px">Save Budget</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- GOAL MODAL -->
+<div class="modal-backdrop" id="goalModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Add Savings Goal</h3><button class="icon-btn" data-close="goalModal">×</button></div>
+    <form id="goalForm">
+      <div class="modal-grid">
+        <div class="full"><label class="muted">Goal Name</label><input id="goalName" required placeholder="New Laptop"></div>
+        <div><label class="muted">Target Amount</label><input id="goalTarget" type="number" min="1" step=".01" required placeholder="80000"></div>
+        <div><label class="muted">Saved Amount</label><input id="goalSaved" type="number" min="0" step=".01" value="0"></div>
+        <div class="full"><label class="muted">Target Date</label><input id="goalDate" type="date"></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-close="goalModal">Cancel</button><button class="primary-btn" style="width:auto;padding:11px 18px">Save Goal</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

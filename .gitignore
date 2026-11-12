@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Firebase local emulator
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Environment/local secrets
+.env
+.env.*
+!.env.example
