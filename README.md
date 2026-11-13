@@ -1,25 +1,71 @@
-# Finova
+# 💰 Finova — Personal Finance Dashboard
 
-Finova is a personal finance dashboard built with HTML, CSS, JavaScript, Firebase Authentication and Cloud Firestore.
+**Finova** is a modern personal finance dashboard designed to help users track income, expenses, budgets, savings goals, and overall financial activity in one place.
 
-## Features
+Built with **HTML, CSS, JavaScript, Firebase Authentication, and Cloud Firestore**, Finova provides a secure, responsive, and user-friendly experience for managing personal finances.
 
-- Firebase email/password authentication
-- User-specific Firestore data
-- Add, edit and delete transactions
-- Automatic balance, income, expense and savings calculations
-- Income vs expense analytics
+### 🌐 Live Demo
+
+**[Open Finova](https://finova-a6602.web.app/)**
+
+---
+
+## ✨ Features
+
+### 🔐 Authentication
+- Firebase Email/Password Authentication
+- Secure user accounts
+- User-specific financial data
+
+### 💳 Transaction Management
+- Add income and expenses
+- Edit existing transactions
+- Delete transactions
+- Automatic balance calculation
+- Automatic income and expense calculation
+- Savings tracking
+
+### 📊 Financial Analytics
+- Income vs. expense analysis
 - Expense category breakdown
-- Search and filter transactions
-- CSV export
-- Monthly budgets with spending progress
-- Budget alerts
-- Savings goals
+- Financial overview dashboard
 - Smart financial insights
-- Dark/light mode
-- Responsive mobile layout
 
-## Project structure
+### 🎯 Budget & Savings Management
+- Create monthly budgets
+- Track spending progress
+- Budget alerts
+- Create savings goals
+- Monitor goal progress
+
+### 🔎 Productivity
+- Search transactions
+- Filter transactions
+- Export transactions as CSV
+
+### 🎨 User Experience
+- Dark/Light mode
+- Responsive design
+- Mobile-friendly layout
+- Clean and intuitive dashboard
+
+---
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| **HTML5** | Application structure |
+| **CSS3** | Styling and responsive design |
+| **JavaScript** | Application logic |
+| **Firebase Authentication** | User authentication |
+| **Cloud Firestore** | Database |
+| **Firebase Hosting** | Production deployment |
+| **Git & GitHub** | Version control |
+
+---
+
+## 🏗️ Project Structure
 
 ```text
 Finova/
@@ -30,68 +76,140 @@ Finova/
 │   ├── firebase.js
 │   └── app.js
 ├── firestore.rules
+├── firebase.json
 ├── .gitignore
 └── README.md
 ```
 
-## Firebase setup
+---
 
-1. Open the Firebase Console for the `finova-a6602` project.
-2. Enable **Authentication → Sign-in method → Email/Password**.
-3. Create/enable **Cloud Firestore Database**.
-4. Publish the rules in `firestore.rules`.
-5. Serve the project from a local web server or deploy it with GitHub Pages/Firebase Hosting.
+## 🔥 Firebase Architecture
 
-The Firebase web configuration is already included in `js/firebase.js`.
+Finova uses Firebase for authentication, database management, and hosting.
 
-## Run locally
+### Authentication
 
-Do not open `index.html` directly with `file://` if your browser blocks ES modules.
+Users authenticate using Firebase Email/Password Authentication.
 
-Using VS Code, install Live Server and open `index.html` with it.
+### Firestore
 
-Or use any static server, for example:
+Financial information is stored under each authenticated user's UID:
+
+```text
+users/
+└── {uid}/
+    ├── transactions/
+    ├── budgets/
+    └── goals/
+```
+
+Firestore security rules ensure that authenticated users can only access their own financial records.
+
+---
+
+## 🔒 Security
+
+Finova uses Firestore security rules based on the authenticated user's UID.
+
+The application follows the principle:
+
+```text
+User → Authentication → UID → User-specific Firestore data
+```
+
+This prevents one authenticated user from accessing another user's financial records.
+
+---
+
+## 🚀 Run Locally
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/oishipaul45-engineer/Finova-Financial-Dashboard.git
+```
+
+### 2. Enter the project directory
+
+```bash
+cd Finova-Financial-Dashboard
+```
+
+### 3. Start a local server
+
+For example:
 
 ```bash
 python -m http.server 5500
 ```
 
-Then open:
+### 4. Open Finova
+
+Visit:
 
 ```text
 http://localhost:5500
 ```
 
-## Push to GitHub
+> Finova should be served through a local web server rather than opened directly using `file://`, because the application uses JavaScript modules.
+
+---
+
+## 🌐 Deployment
+
+Finova is deployed using **Firebase Hosting**.
+
+Production URL:
+
+**https://finova-a6602.web.app**
+
+To deploy an updated version:
 
 ```bash
-git init
-git add .
-git commit -m "Initial Finova release"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-git push -u origin main
+firebase deploy --only hosting
 ```
 
-## GitHub Pages
+---
 
-After pushing:
+## 📦 Firebase Configuration
 
-1. Open the repository on GitHub.
-2. Go to **Settings → Pages**.
-3. Select **Deploy from a branch**.
-4. Select `main` and `/root`.
-5. Save.
-6. Open the generated GitHub Pages URL.
-
-## Firestore data structure
+The project uses the Firebase project:
 
 ```text
-users/
-  {uid}/
-    transactions/
-    budgets/
-    goals/
+finova-a6602
 ```
 
-Each user's Firestore data is protected by the supplied rules so users cannot read or modify another user's records.
+Firebase services used:
+
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Hosting
+
+---
+
+## 📈 Future Improvements
+
+Possible future improvements include:
+
+- Recurring transactions
+- Advanced financial reports
+- More detailed analytics
+- Custom categories
+- Financial reminders
+- Improved budget recommendations
+- PWA/offline support
+- Custom domain support
+
+---
+
+## 👩‍💻 Author
+
+**Oishi Paul**
+
+Built as a personal finance management project using Modern Web Technologies and Firebase.
+
+---
+
+## 📄 License
+
+This project is available for educational and personal use.
